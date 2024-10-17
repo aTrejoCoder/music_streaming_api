@@ -2,16 +2,30 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.hashers import make_password, check_password
 
-
-class User(models.Model):
+class User(AbstractUser):
     user_id = models.AutoField(primary_key=True)
-    email = models.EmailField(max_length=255, unique=True) 
+    email = models.EmailField(max_length=255, unique=True)
     username = models.CharField(max_length=255, unique=True)
-    password = models.CharField(max_length=255)
+    password = models.CharField(max_length=255, blank=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    # Set related names to avoid conflicts
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='custom_user_set',
+        blank=True,
+        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.'
+    )
+    
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='custom_user_set',
+        blank=True,
+        help_text='Specific permissions for this user.'
+    )
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
@@ -20,8 +34,8 @@ class User(models.Model):
         return check_password(raw_password, self.password)
 
     def __str__(self):
-        return self.username 
-    
+        return self.username
+
 
 class Artist(models.Model):
     artist_id = models.AutoField(primary_key=True)
@@ -56,11 +70,15 @@ class Song(models.Model):
 
 
 class Playlist(models.Model):
+    playlist_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     user = models.ForeignKey(User, related_name='playlists', on_delete=models.CASCADE)
     songs = models.ManyToManyField(Song, related_name='playlists', blank=True)
-    created_at = models.DateField(auto_now_add=True)
-    updated_at = models.DateField(auto_now=True) 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True) 
+
+    
+
 
 
 class ListeningHistory(models.Model):

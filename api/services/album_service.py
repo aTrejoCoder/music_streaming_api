@@ -1,4 +1,4 @@
-from api.models.models import Album, Artist
+from api.models import Album, Artist
 from api.utils.result import Result
 
 class AlbumService:

@@ -1,6 +1,9 @@
+import graphene
 from graphene_django.types import DjangoObjectType
-from api.models.models import User, Artist, Album, Song, Playlist, ListeningHistory
+from api.models import Artist, Album, Song, Playlist, ListeningHistory
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class UserType(DjangoObjectType):
     class Meta:
@@ -36,3 +39,9 @@ class ListeningHistoryType(DjangoObjectType):
     class Meta:
         model = ListeningHistory
         fields = ("listeninghistory_id", "user", "songs", "created_at", "updated_at")
+
+
+class AuthPayload(graphene.ObjectType):
+    user = graphene.Field(UserType)
+    jwt_token = graphene.String()
+    oauth2_token = graphene.String()

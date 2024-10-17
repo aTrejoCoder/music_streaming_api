@@ -1,6 +1,6 @@
 import graphene
 from api.schema.types import SongType
-from api.models.models import Song
+from api.models import Song
 from api.utils.api_response import SongResponse
 from api.services.song_services import SongService
 from api.utils.result import Result

@@ -2,7 +2,7 @@ import graphene
 from api.services.artist_service import ArtistService
 from api.utils.result import Result
 from api.schema.types import ArtistType
-from api.models.models import Artist
+from api.models import Artist
 from api.utils.api_response import ArtistResponse
 
 class Query(graphene.ObjectType):

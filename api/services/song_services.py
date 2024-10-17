@@ -1,4 +1,4 @@
-from api.models.models import Song, Artist
+from api.models import Song, Artist
 from api.utils.result import Result
 
 class SongService:
@@ -8,6 +8,18 @@ class SongService:
             return Result.success(song)
         except Song.DoesNotExist:
             return Result.error(f"song with id {song_id} not found")
+
+    def get_songs_by_id_list(song_id_list):
+        songs = Song.objects.filter(pk__in=song_id_list)
+        
+        # Check if all requested songs were found
+        found_song_ids = set(songs.values_list('pk', flat=True))
+        missing_song_ids = [song_id for song_id in song_id_list if song_id not in found_song_ids]
+        
+        if missing_song_ids:
+            return Result.error(f"Songs with IDs {missing_song_ids} not found")
+        else:
+            return Result.success(songs)
 
     def get_songs_by_artist_id(artist_id):
         try:

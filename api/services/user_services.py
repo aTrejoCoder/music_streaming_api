@@ -1,4 +1,4 @@
-from api.models.models import User
+from api.models import User
 from api.utils.result import Result
 from django.contrib.auth.hashers import make_password
 
@@ -11,6 +11,22 @@ class UserService:
             return Result.error("username already taken")
         else:
             return Result.success(None)
+
+    def get_user_by_username(username):
+        try:
+            user = User.objects.get(username=username)
+
+            return Result.success(user)
+        except User.DoesNotExist:
+            return Result.error(f"user with id {username} not found")
+
+    def get_user_by_email(email):
+        try:
+            user = User.objects.get(email=email)
+
+            return Result.success(user)
+        except User.DoesNotExist:
+            return Result.error(f"user with id {email} not found")
 
 
     def get_user_by_id(user_id):

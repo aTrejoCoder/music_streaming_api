@@ -1,4 +1,4 @@
-from api.models.models import Artist
+from api.models import Artist
 from api.utils.result import Result
 
 class ArtistService:
